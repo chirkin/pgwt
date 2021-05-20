@@ -138,8 +138,6 @@ then
       end
 
       if commands["e-proxy"] then
-        -- внешнее проксирование, т.е. запрос перенаправляется на другой сервер
-        -- по абсолютному пути, результат передается клиенту
         ngx.var.pgwt_proxy_url = commands["e-proxy"]
         return;
       end

@@ -1,14 +1,14 @@
 --
 -- pgver / Simple PostgreSQL schema versioning tool
 --
--- Version: 1.0.5
+-- Version: 1.0.6
 -- Author: Aleksey Chirkin.
 --
 
 \set ON_ERROR_STOP
 \set pgver_schema :pgver_schema
 
-CREATE FUNCTION __pgver_assert__(boolean, text) RETURNS void LANGUAGE plpgsql
+CREATE OR REPLACE FUNCTION __pgver_assert__(boolean, text) RETURNS void LANGUAGE plpgsql
 AS $$ BEGIN IF NOT $1 THEN RAISE '%', $2; END IF; END; $$;
 
 SELECT __pgver_assert__(:'pgver_schema' <> ':pgver_schema', 'You need to specify "pgver_schema" variable');

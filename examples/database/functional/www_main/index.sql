@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION www_main.index(IN _pgwt.request, OUT _pgwt.response)
   LANGUAGE plpgsql
 AS $function$
 --
--- Главная страница
+-- Main page
 --
 -- uri: /
 -- methods: GET
