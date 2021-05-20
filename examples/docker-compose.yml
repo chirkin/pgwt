@@ -1,0 +1,22 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: test
+    volumes:
+      - ./postgres:/mnt/deploy:ro
+      - ../src/sql:/mnt/pgwt:rw
+      - ./database:/mnt/data:rw
+  nginx:
+    image: pgwt-openresty
+    ports:
+      - 8080:8080
+    environment:
+      PGWT_CONN_DB: postgres
+      PGWT_CONN_HOST: postgres
+      PGWT_CONN_USER: postgres
+      PGWT_CONN_PASSWORD: test
+      HOSTNAME: myhost

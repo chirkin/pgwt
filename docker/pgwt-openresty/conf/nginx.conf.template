@@ -1,0 +1,27 @@
+
+worker_processes  ${NGX_WORKER_PROCESSES};
+
+events {
+  worker_connections  ${NGX_WORKER_CONNECTIONS};
+  use epoll;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    # See Move default writable paths to a dedicated directory (#119)
+    # https://github.com/openresty/docker-openresty/issues/119
+    client_body_temp_path /var/run/openresty/nginx-client-body;
+    proxy_temp_path       /var/run/openresty/nginx-proxy;
+    fastcgi_temp_path     /var/run/openresty/nginx-fastcgi;
+    uwsgi_temp_path       /var/run/openresty/nginx-uwsgi;
+    scgi_temp_path        /var/run/openresty/nginx-scgi;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    resolver 127.0.0.11 ipv6=off;
+
+    include api.conf;
+}

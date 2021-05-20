@@ -1,0 +1,43 @@
+
+server {
+  listen 8080;
+
+  access_log logs/api-access.log;
+  error_log logs/api-error.log warn;
+
+  set $pgwt_conn_host "$PGWT_CONN_HOST";
+  set $pgwt_conn_port "$PGWT_CONN_PORT";
+  set $pgwt_conn_db "$PGWT_CONN_DB";
+  set $pgwt_conn_user "$PGWT_CONN_USER";
+  set $pgwt_conn_password "$PGWT_CONN_PASSWORD";
+  set $pgwt_server_host "$HOSTNAME";
+  set $pgwt_proxy_url '';
+
+  location ~ ^/(?<path>(.*))$ {
+    client_body_buffer_size 128k;
+    client_max_body_size 128k;
+
+    types { }
+
+    default_type application/json;
+
+    set $pgwt_area 'main';
+
+    add_header Access-Control-Max-Age 3600 always;
+    add_header Access-Control-Allow-Methods 'GET, PATCH, POST, PUT, DELETE, OPTIONS' always;
+    add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,X-Referer,X-URL,If-Modified-Since,Cache-Control,Content-Type,Api-Key' always;
+    add_header Access-Control-Allow-Credentials true always;
+    add_header Vary Origin always;
+
+    if ($request_method = OPTIONS) {
+      return 204;
+    }
+
+    rewrite_by_lua_file 'pgwt_request_handler.lua';
+
+    proxy_pass $pgwt_proxy_url;
+    proxy_intercept_errors on;
+    proxy_request_buffering off;
+    proxy_max_temp_file_size 0;
+  }
+}
